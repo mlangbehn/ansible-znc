@@ -1,0 +1,46 @@
+---
+- name: Add NGINX PPA
+  apt_repository:
+    repo: "ppa:nginx/stable"
+
+- name: Install NGINX
+  package:
+    name: nginx
+    state: present
+
+- name: Enable NGINX
+  service:
+    name: nginx
+    enabled: true
+
+- name: Start NGINX
+  service:
+    name: nginx
+    state: started
+
+- name: Remove default site
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify:
+    - Restart NGINX
+
+- name: Install reverse proxy site
+  template:
+    src: etc/nginx/sites-available/reverse-proxy
+    dest: /etc/nginx/sites-available/{{ nginx_reverse_proxy_name }}
+  notify:
+    - Restart NGINX
+
+- name: Enable reverse proxy site
+  file:
+    src: /etc/nginx/sites-available/{{ nginx_reverse_proxy_name }}
+    dest: /etc/nginx/sites-enabled/{{ nginx_reverse_proxy_name }}
+    state: link
+  notify:
+    - Restart NGINX
+
+- name: Allow NGINX in UFW
+  ufw:
+    rule: allow
+    port: "{{ nginx_site_port }}"

@@ -1,0 +1,6 @@
+---
+nginx_reverse_proxy_name: reverse_proxy
+nginx_site_port: 80
+nginx_server_name: ''
+nginx_dest_ip: 127.0.0.1
+nginx_dest_port: 5000

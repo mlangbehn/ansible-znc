@@ -12,3 +12,10 @@
   tags: ['znc']
   roles:
     - znc
+
+- name: NGINX role for NGINX hosts
+  hosts: nginx
+  become: true
+  tags: ['nginx']
+  roles:
+    - role: nginx

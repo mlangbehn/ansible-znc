@@ -3,3 +3,6 @@ localhost              ansible_connection=local
 
 [znc:children]
 local
+
+[nginx:children]
+local
