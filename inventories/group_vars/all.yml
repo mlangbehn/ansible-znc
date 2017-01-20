@@ -1,0 +1,14 @@
+---
+extra_packages:
+  - vim
+  - zsh
+
+system_users:
+  - eggshell:
+    name: eggshell
+    groups: sudo
+    shell: /usr/bin/zsh
+  - matthew:
+    name: matthew
+    groups: sudo
+    shell: /usr/bin/zsh

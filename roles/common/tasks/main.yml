@@ -1,0 +1,73 @@
+---
+- name: Install extra packages
+  package:
+    name: "{{ item }}"
+    state: latest
+  with_items: "{{ extra_packages }}"
+
+- name: Allow password-less sudo for sudo group
+  lineinfile:
+    dest: /etc/sudoers
+    regexp: '^%sudo'
+    line: '%sudo  ALL=(ALL:ALL) NOPASSWD:ALL'
+    validate: 'visudo -cf %s'
+
+- name: Create user(s)
+  user:
+    name: "{{ item.name }}"
+    groups: "{{ item.groups }}"
+    shell: "{{ item.shell }}"
+  with_items: "{{ system_users }}"
+
+- name: Create user .ssh/
+  file:
+    state: directory
+    path: "~{{ item.name }}/.ssh"
+    owner: "{{ item.name }}"
+    group: "{{ item.name }}"
+    mode: 0700
+  with_items: "{{ system_users }}"
+
+- name: Add SSH key(s)
+  copy:
+    src: "{{ item.name }}.authorized_keys"
+    dest: "~{{ item.name }}/.ssh/authorized_keys"
+    owner: "{{ item.name }}"
+    group: "{{ item.name }}"
+    mode: 0664
+  with_items: "{{ system_users }}"
+
+- name: Disable SSH password authentication
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: 'PasswordAuthentication'
+    line: 'PasswordAuthentication no'
+
+- name: Disable SSH challenge response authentication
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: 'ChallengeResponseAuthentication'
+    line: 'ChallengeResponseAuthentication no'
+
+- name: Enable SSH pubkey authentication
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: 'PubkeyAuthentication'
+    line: 'PubkeyAuthentication yes'
+
+- name: Restart sshd
+  service:
+    name: sshd
+    enabled: true
+    state: restarted
+
+- name: Enable OpenSSH in UFW
+  ufw:
+    rule: limit
+    name: OpenSSH
+
+- name: Enable UFW, deny traffic by default, and turn on logging
+  ufw:
+    state: enabled
+    policy: deny
+    logging: true
