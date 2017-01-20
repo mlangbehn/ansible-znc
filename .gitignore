@@ -1,0 +1,35 @@
+# Ignore temporary files
+tmp/
+
+# Ignore Ansible files
+upstream_roles/
+secrets.yml
+*.retry
+*.log
+*.pyc
+
+# Ignore macOS files
+*.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Ignore Vim files
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+Session.vim
+.netrwhist
+*~
+tags
