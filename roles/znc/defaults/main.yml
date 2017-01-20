@@ -1,0 +1,9 @@
+---
+znc_user: znc-admin
+znc_group: znc
+znc_port: 5000
+znc_ipv4: true
+znc_ipv6: false
+znc_ssl: true
+znc_data_dir: /var/lib/znc
+znc_user_buffer: 50

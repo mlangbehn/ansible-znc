@@ -1,0 +1,5 @@
+[droplet]
+droplet         ansible_host=138.197.38.2
+
+[znc:children]
+droplet

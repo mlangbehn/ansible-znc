@@ -1,0 +1,85 @@
+---
+- name: Create znc group
+  group:
+    name: "{{ znc_group }}"
+    state: present
+    system: true
+
+- name: Create znc user
+  user:
+    name: "{{ znc_user }}"
+    group: "{{ znc_group }}"
+    system: true
+
+- name: Create znc config directories
+  file:
+    path: "{{ item }}"
+    owner: "{{ znc_user }}"
+    group: "{{ znc_group }}"
+    state: directory
+    mode: 0750
+  with_items:
+    - "{{ znc_data_dir }}"
+    - "{{ znc_data_dir }}/configs"
+
+- name: Add znc ppa
+  apt_repository:
+    repo: "ppa:teward/znc"
+
+- name: Install znc
+  apt:
+    name: znc
+
+- name: Add znc systemd unit
+  template:
+    src: etc/systemd/system/znc.service
+    dest: /etc/systemd/system/znc.service
+    owner: root
+    group: root
+    mode: 0644
+
+- name: enable znc
+  service:
+    name: znc
+    enabled: true
+
+- name: start znc
+  service:
+    name: znc
+    state: started
+
+- name: Add znc ufw config
+  template:
+    src: etc/ufw/applications.d/znc
+    dest: /etc/ufw/applications.d/znc
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Allow znc in ufw
+  ufw:
+    name: znc
+    rule: allow
+
+- name: Check for existing znc config
+  stat:
+    path: "{{ znc_data_dir }}/configs/znc.conf"
+  register: znc_config_stat
+
+- name: Install znc configuration file
+  template:
+    src: znc/znc.conf
+    dest: "{{ znc_data_dir }}/configs/znc.conf"
+    owner: "{{ znc_user }}"
+    group: "{{ znc_group }}"
+    mode: 0600
+  when: znc_config_stat.stat.exists == false
+  notify: restart znc
+
+- name: Generate self-signed SSL certificate
+  command: znc --datadir={{ znc_data_dir }} --makepem
+  args:
+    creates: "{{ znc_data_dir }}/znc.pem"
+  become: true
+  become_user: znc-admin
+  notify: restart znc

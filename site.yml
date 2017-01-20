@@ -5,3 +5,10 @@
   tags: ['common']
   roles:
     - role: common
+
+- name: Install and configure znc
+  hosts: znc
+  become: true
+  tags: ['znc']
+  roles:
+    - znc

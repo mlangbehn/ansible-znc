@@ -1,0 +1,10 @@
+[Unit]
+Description=ZNC, an advanced IRC bouncer
+After=network-online.target
+
+[Service]
+ExecStart=/usr/bin/znc -f --datadir={{ znc_data_dir }}
+User={{ znc_user }}
+
+[Install]
+WantedBy=multi-user.target

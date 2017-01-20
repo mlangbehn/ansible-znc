@@ -1,0 +1,4 @@
+[znc]
+title=ZNC IRC bouncer
+description=Advanced modular IRC bouncer.
+ports={{ znc_port }}/tcp
