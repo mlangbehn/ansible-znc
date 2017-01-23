@@ -55,9 +55,9 @@
     regexp: 'PubkeyAuthentication'
     line: 'PubkeyAuthentication yes'
 
-- name: Restart sshd
+- name: Restart SSH
   service:
-    name: sshd
+    name: ssh
     enabled: true
     state: restarted
 

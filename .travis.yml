@@ -1,8 +1,15 @@
 ---
+sudo: required
+dist: trusty
+
 language: python
 python: "2.7"
 
+services:
+  - docker
+
 cache: pip
+
 
 install:
   - pip install ansible ansible-lint yamllint
@@ -10,12 +17,14 @@ install:
 before_script:
   - find . -name '*.yml' -print0 | xargs -n1 -0 yamllint -c .yamllint.yml
   - ansible-lint site.yml
-
-script:
   - ansible-playbook --syntax-check -i inventories/localhost site.yml
   - ansible-playbook --list-hosts -i inventories/localhost site.yml
   - ansible-playbook --list-tags -i inventories/localhost site.yml
   - ansible-playbook --list-tasks -i inventories/localhost site.yml
+  - docker build --file=Dockerfile --tag=ansible-znc .
+
+script:
+  - docker run -i -t --privileged ansible-znc ansible-playbook -vvvv -i /ansible-znc/inventories/localhost /ansible-znc/site.yml
 
 notifications:
   email: false
