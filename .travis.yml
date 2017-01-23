@@ -5,9 +5,10 @@ python: "2.7"
 cache: pip
 
 install:
-  - pip install ansible ansible-lint
+  - pip install ansible ansible-lint yamllint
 
 before_script:
+  - find . -name '*.yml' -print0 | xargs -n1 -0 yamllint -c .yamllint.yml
   - ansible-lint site.yml
 
 script:
