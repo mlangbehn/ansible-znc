@@ -26,6 +26,9 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+# Ignore Vagrant files
+.vagrant/
+
 # Ignore Vim files
 [._]*.s[a-w][a-z]
 [._]s[a-w][a-z]

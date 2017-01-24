@@ -1,21 +1,36 @@
 ---
+dist: trusty
+sudo: required
+
 language: python
 python: "2.7"
 
 cache: pip
 
+# addons:
+#   apt:
+#     packages:
+#       - linux-headers-generic
+#       - vagrant
+#       - virtualbox
+#       - virtualbox-dkms
+
 install:
   - pip install ansible ansible-lint yamllint
+  - sudo apt-get -y --force-yes install linux-headers-generic
+  - sudo apt-get -y install -q virtualbox-dkms virtualbox --fix-missing
 
 before_script:
   - find . -name '*.yml' -print0 | xargs -n1 -0 yamllint -c .yamllint.yml
   - ansible-lint site.yml
-
-script:
   - ansible-playbook --syntax-check -i inventories/localhost site.yml
   - ansible-playbook --list-hosts -i inventories/localhost site.yml
   - ansible-playbook --list-tags -i inventories/localhost site.yml
   - ansible-playbook --list-tasks -i inventories/localhost site.yml
+
+script:
+  - VBoxManage --version
+  - vagrant up
 
 notifications:
   email: false
