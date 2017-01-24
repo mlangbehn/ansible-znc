@@ -37,25 +37,13 @@
     mode: 0664
   with_items: "{{ system_users }}"
 
-- name: Disable SSH password authentication
-  lineinfile:
+- name: Add sshd_config
+  copy:
+    src: etc/ssh/sshd_config
     dest: /etc/ssh/sshd_config
-    regexp: 'PasswordAuthentication'
-    line: 'PasswordAuthentication no'
-  notify: Restart SSH
-
-- name: Disable SSH challenge response authentication
-  lineinfile:
-    dest: /etc/ssh/sshd_config
-    regexp: 'ChallengeResponseAuthentication'
-    line: 'ChallengeResponseAuthentication no'
-  notify: Restart SSH
-
-- name: Enable SSH pubkey authentication
-  lineinfile:
-    dest: /etc/ssh/sshd_config
-    regexp: 'PubkeyAuthentication'
-    line: 'PubkeyAuthentication yes'
+    owner: root
+    group: root
+    mode: 0644
   notify: Restart SSH
 
 - name: Enable OpenSSH in UFW
