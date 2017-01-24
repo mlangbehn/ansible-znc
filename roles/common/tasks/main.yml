@@ -42,24 +42,21 @@
     dest: /etc/ssh/sshd_config
     regexp: 'PasswordAuthentication'
     line: 'PasswordAuthentication no'
+  notify: Restart SSH
 
 - name: Disable SSH challenge response authentication
   lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: 'ChallengeResponseAuthentication'
     line: 'ChallengeResponseAuthentication no'
+  notify: Restart SSH
 
 - name: Enable SSH pubkey authentication
   lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: 'PubkeyAuthentication'
     line: 'PubkeyAuthentication yes'
-
-- name: Restart sshd
-  service:
-    name: sshd
-    enabled: true
-    state: restarted
+  notify: Restart SSH
 
 - name: Enable OpenSSH in UFW
   ufw:
