@@ -12,3 +12,12 @@ system_users:
     name: matthew
     groups: sudo
     shell: /usr/bin/zsh
+
+znc_users:
+  - foo:
+    name: foo
+    password: "ch@ng3me"
+    nick: foo
+    ident: foo
+    realname: "Dr. Foo Bar"
+    admin: true
